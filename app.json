@@ -31,6 +31,12 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b2964d2a-fc5a-45bb-850f-cec11535955d"
+      }
+    },
+    "owner": "roguelogical"
   }
 }
