@@ -2,6 +2,12 @@ import { StyleSheet, Pressable, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { useState, useRef } from 'react'
 import { SelectList } from "react-native-dropdown-select-list";
+const axios = require("axios").default;
+
+axios.defaults = Object.assign(axios.defaults, {
+  withCredentials: false,
+  baseURL: 'http://localhost:9000'
+})
 
 export default function AccountCreationForm() {
   // mock existing users
@@ -255,6 +261,19 @@ export default function AccountCreationForm() {
           occupation: ' + occupation + '\
           zodiac: ' + selectedZodiac
         )
+        axios.post('/auth/register', {
+          username: username,
+          password: password
+        })
+        .then(() => {
+          setOutputText( outputText + "ACCOUNT CREATED!");
+        })
+        .catch((error) => {
+          console.log(error);
+          setOutputColor('red');
+          setOutputText(error.message);
+        });
+
       }
       else {
         setOutputColor('red')

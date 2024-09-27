@@ -2,6 +2,12 @@ import { router } from "expo-router";
 import React, { useState } from "react";
 import { StyleSheet, Pressable, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+const axios = require("axios").default;
+
+axios.defaults = Object.assign(axios.defaults, {
+  withCredentials: true,
+  baseURL: 'http://localhost:9000'
+})
 
 export default function LoginForm() {
 
@@ -101,7 +107,33 @@ export default function LoginForm() {
     console.log("username: " + state.username)
     console.log("password: " + state.password)
 
-    if (pwdsByUser[state.username]) {
+    axios.post('/auth/login', {
+      username: state.username, 
+      password: state.password
+    })
+    .then(function () {
+      console.log('login successful')
+      setState({
+        username: '',
+        userFieldStyle: styles.input,
+        password: '',
+        pwdFieldStyle: styles.input,
+        warningMessage: '',
+      })
+      router.navigate('/')
+    })
+    .catch(function (error) {
+      console.log(error);
+      setState({
+        username: state.username,
+        userFieldStyle: styles.inputRed,
+        password: state.password,
+        pwdFieldStyle: styles.inputRed,
+        warningMessage: 'Wrong Username or Password',
+      })
+    })
+
+    /* if (pwdsByUser[state.username]) {
       if (pwdsByUser[state.username] == state.password) {
         console.log('login successful')
         setState({
@@ -133,7 +165,7 @@ export default function LoginForm() {
         pwdFieldStyle: styles.input,
         warningMessage: 'Username not recognized.'
       })
-    }
+    } */
   }
 
   return (
