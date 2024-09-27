@@ -20,11 +20,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 const corsOptions = {
-    origin: 'http://localhost',
+    origin: 'http://localhost:8081',
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preFlightContinue: false,
+    credentials: true,
     optionsSuccessStatus: 200,
 };
 
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.use('/auth/', authRouter)
 

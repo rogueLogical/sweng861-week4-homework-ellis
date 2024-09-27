@@ -6,7 +6,7 @@ const axios = require("axios").default;
 
 axios.defaults = Object.assign(axios.defaults, {
   withCredentials: false,
-  baseURL: 'http://localhost:9000'
+  baseURL: 'http://127.0.0.2:9000'
 })
 
 export default function AccountCreationForm() {
