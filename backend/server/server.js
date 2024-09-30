@@ -26,7 +26,7 @@ app.use(passport.session());
 const corsOptions = {
     origin: 'http://localhost:8081',
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    preFlightContinue: false,
+    preFlightContinue: true,
     credentials: true,
     optionsSuccessStatus: 200,
 };
@@ -36,6 +36,6 @@ app.use(cors(corsOptions));
 app.use('/auth/', authRouter)
 
 // Start server at port 9000
-app.listen(9000, function () {
+app.listen(9000, () => {
     console.log('Server started on port 9000')
 });

@@ -5,8 +5,13 @@ const bcrypt = require('bcrypt');
 mongoose.connect('mongodb+srv://cbe5252:0RWiMkKKVIrjKG5s@w4-hw-cluster.eporg.mongodb.net/?retryWrites=true&w=majority&appName=w4-hw-cluster')
 
 const userSchema = new mongoose.Schema({
-    username: { type: String, required: true, unique: true },
-    password: { type: String, requires: true }
+    username:       { type: String, required: true, unique: true },
+    password:       { type: String, required: true },
+    email:          { type: String, required: true, unique: true },
+    dob:            { type: Date, required: true },
+    organization:   { type: String, required: false },
+    occupation:     { type: String, required: false },
+    zodiac:         { type: String, required: false }
 });
 
 userSchema.pre('save', async function (next) {

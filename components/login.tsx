@@ -6,22 +6,10 @@ const axios = require("axios").default;
 
 axios.defaults = Object.assign(axios.defaults, {
   withCredentials: true,
-  baseURL: 'http://127.0.0.2:9000'
+  baseURL: 'http://localhost:9000'
 })
 
 export default function LoginForm() {
-
-  const userData = [
-    {
-      username: "chris",
-      password: "password",
-    },
-    {
-      username: "john",
-      password: "something"
-    }
-  ]
-  const pwdsByUser = Object.fromEntries(userData.map(({ username, password}) => [username, password]));
 
   const styles = StyleSheet.create({
     pageView: {
@@ -89,14 +77,14 @@ export default function LoginForm() {
       username: text,
       userFieldStyle: styles.input,
       password: state.password,
-      pwdFieldStyle: state.pwdFieldStyle,
+      pwdFieldStyle: styles.input,
       warningMessage: state.warningMessage,
     });
   }
   const setPassword = (text: string) => {
     setState({
       username: state.username,
-      userFieldStyle: state.userFieldStyle,
+      userFieldStyle: styles.input,
       password: text,
       pwdFieldStyle: styles.input,
       warningMessage: state.warningMessage,
@@ -124,6 +112,7 @@ export default function LoginForm() {
     })
     .catch(function (error) {
       console.log(error);
+      console.log(error.body)
       setState({
         username: state.username,
         userFieldStyle: styles.inputRed,
@@ -131,41 +120,7 @@ export default function LoginForm() {
         pwdFieldStyle: styles.inputRed,
         warningMessage: 'Wrong Username or Password',
       })
-    })
-
-    /* if (pwdsByUser[state.username]) {
-      if (pwdsByUser[state.username] == state.password) {
-        console.log('login successful')
-        setState({
-          username: '',
-          userFieldStyle: styles.input,
-          password: '',
-          pwdFieldStyle: styles.input,
-          warningMessage: '',
-        })
-        router.navigate('/')
-      }
-      else {
-        console.log('incorrect password')
-        setState({
-          username: state.username,
-          userFieldStyle: styles.input,
-          password: state.password,
-          pwdFieldStyle: styles.inputRed,
-          warningMessage: 'Wrong Password',
-        })
-      }
-    }
-    else {
-      console.log('User Does Not Exist')
-      setState({
-        username: state.username,
-        userFieldStyle: styles.inputRed,
-        password: state.password,
-        pwdFieldStyle: styles.input,
-        warningMessage: 'Username not recognized.'
-      })
-    } */
+    });
   }
 
   return (

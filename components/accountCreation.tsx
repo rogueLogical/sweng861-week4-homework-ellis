@@ -70,7 +70,8 @@ export default function AccountCreationForm() {
         borderRadius: 5,
         alignItems: "center",
         justifyContent: "center",
-        paddingVertical: 5
+        paddingVertical: 5,
+        width: 150
       },
       buttonText: {
         color: "white",
@@ -90,20 +91,23 @@ export default function AccountCreationForm() {
       clearTimeout(usernameTimeout.current);
       setUsername(text)
       setUsernameValid(false);
-      usernameTimeout.current = setTimeout(() => {
-        if (text.length < 4) {
-          setUsrFieldStyle(styles.inputRed);
-          setUsernameWarningText('Username must be at least 4 characters');
-        }
-        else if (pwdsByUser[text]) {
+      usernameTimeout.current = setTimeout( () => {
+        axios.post('/auth/user', {username: text})
+        .then(() => {
           setUsrFieldStyle(styles.inputRed);
           setUsernameWarningText('Username Taken');
-        }
-        else {
-          setUsrFieldStyle(styles.input);
-          setUsernameWarningText('');
-          setUsernameValid(true);
-        }
+        })
+        .catch(() => {
+          if (text.length < 4) {
+            setUsrFieldStyle(styles.inputRed);
+            setUsernameWarningText('Username must be at least 4 characters');
+          }
+          else {
+            setUsrFieldStyle(styles.input);
+            setUsernameWarningText('');
+            setUsernameValid(true);
+          }
+        });
       }, 2000);
     };
 
@@ -194,6 +198,9 @@ export default function AccountCreationForm() {
     const emailTimeout = useRef(null);
     const emailEntry = (text: string) => {
       clearTimeout(emailTimeout.current);
+      setEmailFieldStyle(styles.input);
+      setEmailConfFieldStyle(styles.input);
+      setEmailConfWarningText('');
       setEmail(text)
       setEmailValid(false);
       emailTimeout.current = setTimeout(() => {
@@ -202,11 +209,18 @@ export default function AccountCreationForm() {
           setEmailWarningText('Enter a Valid Email Address');
         }
         else {
-          setEmailFieldStyle(styles.input);
-          setEmailWarningText('');
-          if (emailConf != '') {
-            ConfirmEmail(emailConf, text)
-          }
+          axios.post('/auth/email', {email: text})
+          .then(() => {
+            setEmailFieldStyle(styles.inputRed);
+            setEmailWarningText('Email is already being used.');
+          })
+          .catch(() => {
+            setEmailFieldStyle(styles.input);
+            setEmailWarningText('');
+            if (emailConf != '') {
+              ConfirmEmail(emailConf, text)
+            }
+          });
         }
       }, 2000);
     };
@@ -230,6 +244,7 @@ export default function AccountCreationForm() {
     }
     const emailConfEntry = (text: string) => {
       clearTimeout(emailConfTimeout.current);
+      setEmailConfFieldStyle(styles.input);
       setEmailConf(text)
       setEmailValid(false);
       emailConfTimeout.current = setTimeout(() => {
@@ -250,22 +265,19 @@ export default function AccountCreationForm() {
 
     const submitForm = () => {
       if (usernameValid && passwordValid && dobValid && emailValid) {
-        setOutputColor('green')
-        setOutputText(
-          'Account Created!\
-          username: ' + username + '\
-          password: ' + password + '\
-          dob: ' + dob + '\
-          email: ' + email + '\
-          organization: ' + organization + '\
-          occupation: ' + occupation + '\
-          zodiac: ' + selectedZodiac
-        )
+        
+        setOutputText('')
         axios.post('/auth/register', {
           username: username,
-          password: password
+          password: password,
+          email: email,
+          dob: dob,
+          organization: organization,
+          occupation: occupation,
+          zodiac: selectedZodiac
         })
         .then(() => {
+          setOutputColor('green')
           setOutputText( outputText + "ACCOUNT CREATED!");
         })
         .catch((error) => {
@@ -277,7 +289,7 @@ export default function AccountCreationForm() {
       }
       else {
         setOutputColor('red')
-        setOutputText('Failed to create an account.' + String(usernameValid))
+        setOutputText('Failed. Check Errors above.')
       }
     }
 
@@ -377,11 +389,11 @@ export default function AccountCreationForm() {
             />
           </View>
           
-          <View style={{paddingVertical: 5}}>
+          <View style={{paddingVertical: 5, justifyContent: 'center', alignContent: 'center'}}>
             <Pressable style={styles.button} >
               <Text style={styles.buttonText} onPress={submitForm}>Submit</Text>
             </Pressable>
-          <Text style={{color:outputColor}} >{outputText}</Text>
+            <Text style={{color:outputColor}} >{outputText}</Text>
           </View>
         </View>
       </View>
